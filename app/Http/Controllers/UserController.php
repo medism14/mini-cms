@@ -40,13 +40,16 @@ class UserController extends Controller
 
         //S'il change de page
             if ($request->input('pageId')) {
-
                 $page = Page::where('id', $request->input('pageId'))->first();
 
                 session(['pageConfig' => $page]);
                 session()->save();
             }
         //
+
+        $pages = Page::whereHas('site.user', function ($query) use ($user) {
+            $query->where('id', $user->id);
+        })->get();
 
         if (!session()->has('pageConfig')) {
 
@@ -60,6 +63,7 @@ class UserController extends Controller
 
         return view('authed.config', [
             'user' => $user,
+            'pages' => $pages
         ]);
     }
 

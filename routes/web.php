@@ -44,7 +44,7 @@ Route::middleware('preventBack')->group(function () {
         //Users
         Route::prefix('/users')->name('users.')->group(function () {
             Route::match(['get', 'post'], '/', [UserController::class, 'index'])->name('dashboard');
-            Route::get('/config', [UserController::class, 'config'])->name('config');
+            Route::match(['get', 'post'], '/config', [UserController::class, 'config'])->name('config');
         });
 
     });

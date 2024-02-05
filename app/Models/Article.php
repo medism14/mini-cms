@@ -14,6 +14,7 @@ class Article extends Model
 
     protected $fillable = [
         'order',
+        'title',
         'section_id'
     ];
 
