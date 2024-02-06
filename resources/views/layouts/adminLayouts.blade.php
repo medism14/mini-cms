@@ -74,7 +74,7 @@
                     <!-- Ajouter une nouvelle section -->
                     <div class="m-4 flex">
                         <div class="flex-1 flex justify-start">
-                            <p>Sections</p>
+                            <p>Articles</p>
                         </div>
                         <div class="flex-1 flex justify-end">
                             <button class="px-3 rounded-lg bg-green-600 text-white"><i class="fas fa-plus"></i></button>

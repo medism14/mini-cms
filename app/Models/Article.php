@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Text;
 use App\Models\Image;
-use App\Models\Section;
+use App\Models\Page;
 
 class Article extends Model
 {
@@ -15,11 +15,11 @@ class Article extends Model
     protected $fillable = [
         'order',
         'title',
-        'section_id'
+        'page_id'
     ];
 
-    public function section () {
-        return $this->belongsTo(Section::class);
+    public function page () {
+        return $this->belongsTo(Page::class);
     }
 
     public function texts () {

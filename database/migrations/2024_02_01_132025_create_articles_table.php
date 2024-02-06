@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->integer('order');
             $table->integer('title');
-            $table->unsignedBigInteger('section_id');
+            $table->unsignedBigInteger('page_id');
             $table->timestamps();
 
-            $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
+            $table->foreign('page_id')->references('id')->on('pages')->onDelete('cascade');
         });
     }
 

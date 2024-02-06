@@ -4,11 +4,13 @@
 
 @section('content')
     <canvas id="myCanvas" class="mb-16" style="border: 1px solid black; border-radius: 25px;"></canvas>
-    @foreach (session('pageConfig')->sections as $section)
-        <section class="sectionContent w-full flex justify-center">
-            as
-        </section>
-    @endforeach
+    @if (is_array(session('pageConfig')->sections))
+        @foreach (session('pageConfig')->sections as $section)
+            <section class="sectionContent w-full flex justify-center">
+                a
+            </section>
+        @endforeach
+    @endif
     
 @endsection
 

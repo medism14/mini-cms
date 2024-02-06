@@ -5,10 +5,12 @@
 @section('content')
     <canvas id="myCanvas" class="mb-16" style="border: 1px solid black; border-radius: 25px;"></canvas>
 
-    @foreach (session('pagePublic')->sections as $section)
-        <section class="sectionContent w-full flex justify-center">
-        </section>
-    @endforeach
+    @if (is_array(session('pagePublic')->sections))
+        @foreach (session('pagePublic')->sections as $section)
+            <section class="sectionContent w-full flex justify-center">
+            </section>
+        @endforeach
+    @endif
     
 @endsection
 

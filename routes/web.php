@@ -23,7 +23,7 @@ Route::middleware('preventBack')->group(function () {
         //Page authentification
         Route::get('/', function () {
             return view('guest.authentification');
-        });
+        })->name('auth');
 
         //Page inscription
         Route::get('/inscription', function () {

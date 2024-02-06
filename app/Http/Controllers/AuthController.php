@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Site;
+use App\Models\Page;
+use App\Models\Menu;
 class AuthController extends Controller {
 
     public function login(Request $request) {
@@ -24,6 +27,7 @@ class AuthController extends Controller {
     }
 
     public function register (Request $request) {
+        
         $validator = Validator::make($request->all(), [
             'first_name' => 'required',
             'last_name' => 'required',
@@ -63,21 +67,21 @@ class AuthController extends Controller {
 
         $site = Site::Create([
             'name' => 'monSite',
+            'font_color' => 'black',
+            'background_color' => '#F2F4F2',
+            'section_color' => '#C2DCBC',
             'user_id' => $user->id
         ]);
 
         $page = Page::Create([
             'name' => 'Index',
             'order' => 1,
-            'font_color' => 'black',
-            'background_color' => '#BACFF0',
-            'section_color' => '#B9F0AD',
-            'site_id' => $site->id,
+            'site_id' => $site->id
         ]);
 
         $menu = Menu::Create([
-            'type' => 'horizontale',
-            'page_id' => $site->id
+            'type' => 'burger',
+            'site_id' => $site->id
         ]);
 
         Auth::login($user);

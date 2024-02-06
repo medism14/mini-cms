@@ -33,7 +33,7 @@
 
     </head>
     <body>
-        <nav class="bg-[#1C62CF] p-5 mt-0 md:mt-2 border-[#1C62CF] text-white font-bold flex rounded-t-none md:rounded-t-lg justify-center rounded-lg w-full md:w-[80%] mx-auto">
+        <nav class="bg-gray-700 p-5 mt-0 md:mt-2  bg-gray-700 text-white font-bold flex rounded-t-none md:rounded-t-lg justify-center rounded-lg w-full md:w-[80%] mx-auto">
             <ul class="list-style-none flex items-center flex-row justify-between w-[50%]">
                 <li class="relative">
                     <a href="/" class="special-ouverture">Connexion</a>
