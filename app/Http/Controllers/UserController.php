@@ -11,24 +11,19 @@ class UserController extends Controller
     public function index (Request $request) {
         $user = User::find(auth()->user()->id);
 
-        //S'il change de page
+        //S'il change de page ou pas
             if ($request->input('pageId')) {
 
                 $page = Page::where('id', $request->input('pageId'))->first();
 
                 session(['pagePublic' => $page]);
-                session()->save();
-            }
-        //
+            } else {
 
-        if (!session()->has('pagePublic')) {
-            $pageActuelle = Page::whereHas('site.user', function ($query) use ($user){
-                $query->where('id', $user->id);
-            })->first();
+            $pageActuelle = Page::where('id', session('pagePublic')->id)->first();
 
             session(['pagePublic' => $pageActuelle]);
-            session()->save();
         }
+    //
 
         return view('authed.pages', [
             'user' => $user,
@@ -38,28 +33,23 @@ class UserController extends Controller
     public function config (Request $request) {
         $user = User::find(auth()->user()->id);
 
-        //S'il change de page
+        //S'il change de page ou pas
             if ($request->input('pageId')) {
+
                 $page = Page::where('id', $request->input('pageId'))->first();
 
                 session(['pageConfig' => $page]);
-                session()->save();
+            } else {
+
+                $pageActuelle = Page::where('id', session('pageConfig')->id)->first();
+
+                session(['pageConfig' => $pageActuelle]);
             }
         //
 
         $pages = Page::whereHas('site.user', function ($query) use ($user) {
             $query->where('id', $user->id);
         })->get();
-
-        if (!session()->has('pageConfig')) {
-
-            $pageActuelle = Page::whereHas('site.user', function ($query) use ($user){
-                $query->where('id', $user->id);
-            })->first();
-
-            session(['pageConfig' => $pageActuelle]);
-            session()->save();
-        }
 
         return view('authed.config', [
             'user' => $user,

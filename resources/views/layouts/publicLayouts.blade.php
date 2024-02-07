@@ -21,7 +21,6 @@
         }
         .sectionContent {
             color: {{ $user->site->font_color }};
-            border-bottom: 2px solid {{ $user->site->section_color }};
         }
 
         .soulignement::before {
@@ -104,10 +103,15 @@
             <section class="w-full p-5 flex flex-col items-center">
                 @if (session('errors'))
                     @if (is_array(session('errors')))
-                            @foreach (session('errors') as $v => $error)
-                                <script>
-                                    errors += '{{ $error }}';
-                                </script>
+                        <script>
+                            var errors = '';
+                        </script>
+                            @foreach (session('errors') as $error)
+                                @foreach ($error as $v)
+                                    <script>
+                                        errors += '{{ $v }}\n';
+                                    </script>
+                                @endforeach
                             @endforeach
                         <script>
                             alert(errors);
@@ -120,8 +124,9 @@
                 @endif
 
                 @if (session('success'))
-                    <p class="w-full text-center mb-5 text-green-600">{{ session('success') }}</p>
+                    <p class="w-full text-center mb-5 text-green-600 message">{{ session('success') }}</p>
                 @endif
+
                 @yield('content')
             </section>
         </section>
@@ -186,7 +191,7 @@
                 @endif
 
                 @if (session('success'))
-                    <p class="w-full text-center mb-5 text-green-600">{{ session('success') }}</p>
+                    <p class="w-full text-center mb-5 text-green-600 message">{{ session('success') }}</p>
                 @endif
                 @yield('content')
             </section>
@@ -258,7 +263,7 @@
                 @endif
 
                 @if (session('success'))
-                    <p class="w-full text-center mb-5 text-green-600">{{ session('success') }}</p>
+                    <p class="w-full text-center mb-5 text-green-600 message">{{ session('success') }}</p>
                 @endif
                 @yield('content')
             </section>
@@ -353,6 +358,16 @@
                 
             }
             drawImageWithText();
+        //
+
+        //Suppression des messages existants
+            const msg = Array.from(document.getElementsByClassName('message'));
+
+            setTimeout(() => {
+                msg.forEach((m) => {
+                    m.remove();
+                });
+            }, 3000);
         //
     </script>
     

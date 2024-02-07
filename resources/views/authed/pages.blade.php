@@ -5,6 +5,8 @@
 @section('content')
     <canvas id="myCanvas" class="mb-16" style="border: 1px solid black; border-radius: 25px;"></canvas>
 
+    <hr class="w-[80%] border-b-2 border-[{{ $user->site->section_color }}]">
+
     @if (is_array(session('pagePublic')->sections))
         @foreach (session('pagePublic')->sections as $section)
             <section class="sectionContent w-full flex justify-center">

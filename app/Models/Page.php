@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Models\Site;
 use App\Models\Menu;
-use App\Models\Comment;
+use App\Models\Article;
 
 class Page extends Model
 {
@@ -23,8 +23,8 @@ class Page extends Model
         return $this->belongsTo(Site::class);
     }
 
-    public function comments () {
-        return $this->hasMany(Comment::class);
+    public function articles () {
+        return $this->hasMany(Article::class);
     }
 
 }

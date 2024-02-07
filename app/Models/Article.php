@@ -23,11 +23,11 @@ class Article extends Model
         return $this->belongsTo(Page::class);
     }
 
-    public function texts () {
+    public function text () {
         return $this->hasOne(Text::class);
     }
 
-    public function images () {
+    public function image () {
         return $this->hasOne(Image::class);
     }
 

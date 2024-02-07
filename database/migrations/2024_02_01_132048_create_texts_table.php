@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('texts', function (Blueprint $table) {
             $table->id();
-            $table->integer('order');
             $table->longText('content');
             $table->unsignedBigInteger('article_id');
             $table->timestamps();

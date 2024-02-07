@@ -11,7 +11,6 @@ class Image extends Model
     use HasFactory;
 
     protected $fillable = [
-        'order',
         'filename',
         'path',
         'article_id'

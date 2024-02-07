@@ -83,6 +83,18 @@
             Tout droits reservés ©
         </footer>
 
+        <script>
+        //Suppression des messages existants
+            const msg = Array.from(document.getElementsByClassName('message'));
+
+            setTimeout(() => {
+                msg.forEach((m) => {
+                    m.remove();
+                });
+            }, 4000);
+        //
+        </script>
+
         @yield('scripts')
     </body>
 </html>

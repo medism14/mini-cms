@@ -18,9 +18,9 @@
         body {
             background-color: white;
         }
+
         .sectionContent {
             color: {{ $user->site->font_color }};
-            border-bottom: 2px solid {{ $user->site->section_color }};
         }
 
         input[type="color"] {
@@ -35,6 +35,10 @@
         input[type="color"]::-webkit-color-swatch {
             border: none;
         }
+
+        #sectionDisplay {
+            
+        }
     </style>
 
     </head>
@@ -42,6 +46,7 @@
         
     <!-- Section pour séparer les trois parties -->
     <section class="flex">
+
         <!-- Section gauche -->
         <section class="min-h-screen w-[20%]">
             <!-- Section gauche conteneur -->
@@ -54,16 +59,27 @@
                             Pages
                         </div>
                         <div class="flex-1 flex justify-end">
-                            <button class="px-3 rounded-lg bg-green-600 text-white"><i class="fas fa-plus"></i></button>
+                            <button class="px-3 rounded-lg bg-green-600 text-white" id="addPage"><i class="fas fa-plus"></i></button>
                         </div>
                     </div>
                     
                     <!-- Pages -->
-                    @foreach ($pages as $page)  
-                        <div>
-                            <form action="{{ route('users.config') }}" method="POST" class="m-0 p-0">
+                    @foreach ($pages as $page)
+                        <div class="flex border-b-2">
+                            <form action="{{ route('users.config') }}" method="POST" class="m-0 p-0 flex-1">
                                 @csrf
-                                <button name="pageId" value="{{ $page->id }}" class="underline px-4 rounded-b-lg border-b-2 border-gray-900 text-lg text-gray-700 font-bold hover:text-gray-900 m-2" type="submit">{{ $page->name }}</button>
+                                <button name="pageId" value="{{ $page->id }}" class="{{ session('pageConfig')->name == $page->name ? 'underline' : '' }} px-4 rounded-b-lg border-b-2 border-gray-900 text-lg text-gray-700 font-bold hover:text-gray-900 m-2" type="submit">{{ $page->name }}</button>
+                            </form>
+                            
+                            <div class="w-1/6 ml-3 flex items-center">
+                                <input id="pageId" value="{{ $page->id }}" class="hidden">
+                                <button name="pageId" value="{{ $page->id }}" class="text-lg text-orange-600 font-bold hover:text-orange-700" type="submit" id="editPage"><i class="fas fa-pencil-alt"></i></button>
+                            </div>
+
+                            <form action="{{ route('pages.delete', ['id' => $page->id]) }}" method="POST" class="m-0 p-0 w-1/6 flex items-center"  onsubmit="return confirm('Voulez vous vraiment supprimer cette article ?')">
+                                @csrf
+                                @method('DELETE')
+                                <button name="pageId" value="{{ $page->id }}" class="text-lg text-red-600 font-bold hover:text-red-700" type="submit"><i class="fas fa-trash"></i></button>
                             </form>
                         </div>
                     @endforeach
@@ -77,21 +93,165 @@
                             <p>Articles</p>
                         </div>
                         <div class="flex-1 flex justify-end">
-                            <button class="px-3 rounded-lg bg-green-600 text-white"><i class="fas fa-plus"></i></button>
+                            <button class="px-3 rounded-lg bg-green-600 text-white" id="addArticle"><i class="fas fa-plus"></i></button>
                         </div>
                     </div>
 
-                    <!-- Pages -->
-                    @foreach (session('pageConfig')->sections as $section)
-                        <div>
-                            sz
-                        </div>
-                    @endforeach
+                    <!-- Articles -->
+                    @if ((session('pageConfig')->articles))
+                        @foreach (session('pageConfig')->articles as $article)
+                            <div class="border-b-2 font-bold p-2 bg-gray-200 text-black w-full my-1 flex">
+                                <div class="w-2/3 flex justify-start">
+                                    {{ $article->title }}
+                                </div>
+                                <div class="w-1/3 flex space-x-3 justify-end">
+                                    <div class="">
+                                        <input id="pageId" value="{{ $page->id }}" class="hidden">
+                                        <button name="pageId" value="{{ $page->id }}" class="text-lg text-orange-600 font-bold hover:text-orange-700" type="submit" id="editPage"><i class="fas fa-pencil-alt"></i></button>
+                                    </div>
+
+                                    <form action="{{ route('articles.delete', ['id' => $article->id]) }}" method="POST" class="m-0 p-0 flex items-center" onsubmit="return confirm('Voulez vous vraiment supprimer cette article ?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button name="pageId" value="{{ $page->id }}" class="text-lg text-red-600 font-bold hover:text-red-700" type="submit"><i class="fas fa-trash"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif
+                    
                 </div>
             </section>
         </section>
 
-        <section class="overflow-auto w-[60%] p-5 flex flex-col items-center bg-[{{ $user->site->background_color }}]">
+        <!-- Modal ajouter page -->
+        <div id="addPageModal" class="hidden h-screen z-50 inset-0 fixed bg-gray-300 bg-opacity-75">
+            <form action="{{ route('pages.add') }}" method="POST" class="p-0 m-0">
+                @csrf
+            <div id="subAddPageModal" class="w-full md:w-[40%] mx-auto my-24 flex justify-center flex flex-col">
+                <!-- Modal title -->
+                <div class="rounded-lg w-full rounded-b-none p-3 text-center bg-green-800 text-white flex">
+                    <p class="w-1/3"></p>
+                    <p class="flex-1">Ajout page</p>
+                    <p class="text-end w-1/3"><i class="fas fa-times cursor-pointer text-xl" id="closeAddPageModal"></i></p>
+                </div>
+
+                <!-- Modal body -->
+                <div class="rounded-lg w-full rounded-t-none rounded-b-none p-3 text-center bg-gray-300 ">
+                    <!-- Row -->
+                    <div class="w-full flex justify-center items-center">
+                        <label for="pageName">Nom de la page: </label>
+                        <input type="text" name="pageName" id="pageName" class="ml-3 p-1 rounded outline-none shadow-md">
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="rounded-lg w-full rounded-t-none p-3 text-center bg-gray-100 border-t-2 border-gray-400">
+                    <button class="px-2 py-1 bg-green-700 text-white rounded-lg transition-all duration-300 hover:bg-green-800">Ajouter</button>
+                </div>
+            </div>
+            </form>
+        </div>
+
+        <!-- Modal modifier page -->
+        <div id="editPageModal" class="hidden h-screen z-50 inset-0 fixed bg-gray-300 bg-opacity-75">
+            <form action="{{ route('pages.edit', ['id' => $page->id]) }}" method="POST" class="m-0 p-0">
+                @csrf
+            <div id="subEditPageModal" class="w-full md:w-[40%] mx-auto my-24 flex justify-center flex flex-col">
+                <!-- Modal title -->
+                <div class="rounded-lg w-full rounded-b-none p-3 text-center bg-green-800 text-white flex">
+                    <p class="w-1/3"></p>
+                    <p class="flex-1">Modification page</p>
+                    <p class="text-end w-1/3"><i class="fas fa-times cursor-pointer text-xl" id="closeEditPageModal"></i></p>
+                </div>
+
+                <!-- Modal body -->
+                <div class="rounded-lg w-full rounded-t-none rounded-b-none p-3 text-center bg-gray-300 ">
+                    <!-- Row -->
+                    <div class="w-full flex justify-center items-center">
+                        <label for="editPageName">Nom de la page: </label>
+                        <input type="text" name="editPageName" id="editPageName" class="ml-3 p-1 rounded outline-none shadow-md">
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="rounded-lg w-full rounded-t-none p-3 text-center bg-gray-100 border-t-2 border-gray-400">
+                    <button class="px-2 py-1 bg-green-700 text-white rounded-lg transition-all duration-300 hover:bg-green-800">Modifier</button>
+                </div>
+            </div>
+            </form>
+        </div>
+
+        <!-- Modal ajouter article -->
+        <div id="addArticleModal" class="hidden h-screen z-50 inset-0 fixed bg-gray-300 bg-opacity-75 overflow-auto">
+            <form action="{{ route('articles.add') }}" method="POST" class="m-0 p-0" enctype="multipart/form-data">
+            @csrf
+            <div id="subaddArticleModal" class="w-full md:w-[80%] mx-auto flex justify-center flex flex-col my-5">
+                <!-- Modal title -->
+                <div class="rounded-lg w-full rounded-b-none p-3 text-center bg-green-800 text-white flex">
+                    <p class="w-1/3"></p>
+                    <p class="flex-1">Ajout Article</p>
+                    <p class="text-end w-1/3"><i class="fas fa-times cursor-pointer text-xl" id="closeAddArticleModal"></i></p>
+                </div>
+
+                <!-- Modal body -->
+                <div class="rounded-lg w-full rounded-t-none rounded-b-none p-3 text-center bg-gray-300 flex flex-col space-y-8">
+                    <!-- Row -->
+                    <div class="w-full flex justify-center items-center">
+                        <label for="addArticleTitle">Titre de l'article: </label>
+                        <input type="text" placeholder="Titre de l'article..." name="addArticleTitle" id="addArticleTitle" class="ml-3 p-1 rounded outline-none shadow-md">
+                    </div>
+
+                    <!-- Row -->
+                    <div class="w-full flex justify-center items-center">
+                        <label for="addArticleImage">Image de l'article: </label>
+                        <input type="file" name="addArticleImage" id="addArticleImage" class="ml-3 shadow-md border-none rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:border-transparent">
+                    </div>
+
+                    <!-- Row -->
+                    <div class="w-full flex justify-center items-center flex-col">
+                        <label for="addArticleContent">Contenu: </label>
+                        <textarea id="addArticleContent" placeholder="Contenu de l'article..." name="addArticleContent" cols="100" rows="30" class="p-1 focus:outline-none focus:ring-2 border-blue-300 rounded"></textarea>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="rounded-lg w-full rounded-t-none p-3 text-center bg-gray-100 border-t-2 border-gray-400">
+                    <button class="px-2 py-1 bg-green-700 text-white rounded-lg transition-all duration-300 hover:bg-green-800">Ajouter</button>
+                </div>
+            </div>
+            </form>
+        </div>
+
+
+        <!-- Section milieu -->
+        <section id="sectionDisplay" class="overflow-auto w-[60%] p-5 flex flex-col items-center bg-[{{ $user->site->background_color }}]">
+            @if (session('errors'))
+                @if (is_array(session('errors')))
+                    <script>
+                        var errors = '';
+                    </script>
+                        @foreach (session('errors') as $error)
+                            @foreach ($error as $v)
+                                <script>
+                                    errors += '{{ $v }}\n';
+                                </script>
+                            @endforeach
+                        @endforeach
+                    <script>
+                        alert(errors);
+                    </script>
+                @else
+                    <script>
+                        alert("{{ session('errors') }}");
+                    </script>
+                @endif
+            @endif
+
+            @if (session('success'))
+                <p class="w-full text-center mb-5 text-green-600 message">{{ session('success') }}</p>
+            @endif
+
             @yield('content')
         </section>
 
@@ -107,106 +267,210 @@
                 <div class="h-[90vh] w-full overflow-auto pt-5">
                 
                     <!-- Nom du site -->
+                    <form action="{{ route('sites.editSiteName') }}" method="POST" class="m-0 p-0">
+                    @csrf
                     <div class="border-b-4 mb-5">
                         <h1 class="text-center text-xl font-bold underline mb-3">Nom du site</h1>
                         <div class="flex justify-center">
-                            <input type="text" name="siteName" class="w-[70%] border-2 border-gray-400 p-1 outline-none rounded">
+                            <input type="text" name="siteName" class="w-[70%] border-2 border-gray-400 p-1 outline-none rounded" value="{{ session('pageConfig')->site->name }}">
                         </div>
 
                         <div class="w-full flex justify-center p-2">
                             <button class="mt-4 px-2 py-1 bg-green-500 text-white rounded-lg shadow-md transition-all duration-300 hover:bg-green-600">Enregistrer</button>
                         </div>
                     </div>
+                    </form>
+
+                    <!-- Menu Type -->
+                    <form action="{{ route('sites.editMenuType') }}" method="POST" class="m-0 p-0">
+                    @csrf
+                    <div class="border-b-4 mb-5">
+                        <div class="flex flex-col">
+                            <h1 class="text-center text-xl font-bold underline mb-3">Type de menu</h1>
+                            <div class="lg:flex">
+                                <p class="lg:w-[60%] text-center">Burger</p>
+                                <p class="lg:w-[20%] text-center"><input type="radio" value="burger" name="typeMenu" class="cursor-pointer" {{ (session('pageConfig')->site->menu->type == 'burger' ? 'checked' : '') }}></p>
+                            </div>
+                            
+                            <div class="lg:flex">
+                                <p class="lg:w-[60%] text-center">Verticale</p>
+                                <p class="lg:w-[20%] text-center"><input type="radio" value="verticale" name="typeMenu" class="cursor-pointer" {{ (session('pageConfig')->site->menu->type == 'verticale' ? 'checked' : '') }}></p>
+                            </div>
+
+                            <div class="lg:flex">
+                                <p class="lg:w-[60%] text-center">Horizontale</p>
+                                <p class="lg:w-[20%] text-center"><input type="radio" value="horizontale" name="typeMenu" class="cursor-pointer" {{ (session('pageConfig')->site->menu->type == 'horizontale' ? 'checked' : '') }}></p>
+                            </div>
+                        </div>
+                        <div class="w-full flex justify-center p-2">
+                            <button class="mt-4 px-2 py-1 bg-green-500 text-white rounded-lg shadow-md transition-all duration-300 hover:bg-green-600">Enregistrer</button>
+                        </div>
+                    </div>
+                    </form>
 
                     <!-- Background color -->
+                    <form action="{{ route('sites.editBackgroundColor') }}" method="POST" class="m-0 p-0">
+                    @csrf
                     <div class="border-b-4 mb-5">
                         <div class="flex flex-col">
                             <h1 class="text-center text-xl font-bold underline mb-3">Background Color</h1>
                             <div class="lg:flex">
-                                <p class="lg:w-[60%] text-center">Bleu</p>
-                                <p class="lg:w-[20%] text-center"><input type="color" value="#ADD8E6" class="cursor-pointer" disabled></p>
-                                <p class="lg:w-[20%] text-center"><input type="radio" value="#ADD8E6" name="background" class="cursor-pointer"></p>
+                                <p class="lg:w-[60%] text-center">Bleu Clair</p>
+                                <p class="lg:w-[20%] text-center"><input type="color" value="#D8E5EB" class="cursor-pointer" disabled></p>
+                                <p class="lg:w-[20%] text-center"><input type="radio" value="#D8E5EB" name="backgroundColor" class="cursor-pointer" {{ (session('pageConfig')->site->background_color == '#D8E5EB' ? 'checked' : '') }}></p>
                             </div>
                             
                             <div class="lg:flex">
                                 <p class="lg:w-[60%] text-center">Gris clair</p>
                                 <p class="lg:w-[20%] text-center"><input type="color" value="#F2F4F2" class="cursor-pointer" disabled></p>
-                                <p class="lg:w-[20%] text-center"><input type="radio" value="#F2F4F2" name="background" class="cursor-pointer"></p>
+                                <p class="lg:w-[20%] text-center"><input type="radio" value="#F2F4F2" name="backgroundColor" class="cursor-pointer" {{ (session('pageConfig')->site->background_color == '#F2F4F2' ? 'checked' : '') }}></p>
                             </div>
 
                             <div class="lg:flex">
-                                <p class="lg:w-[60%] text-center">Vert</p>
-                                <p class="lg:w-[20%] text-center"><input type="color" value="#D3F2B4" class="cursor-pointer" disabled></p>
-                                <p class="lg:w-[20%] text-center"><input type="radio" value="#D3F2B4" name="background" class="cursor-pointer"></p>
+                                <p class="lg:w-[60%] text-center">Vert Clair</p>
+                                <p class="lg:w-[20%] text-center"><input type="color" value="#D4E8C9" class="cursor-pointer" disabled></p>
+                                <p class="lg:w-[20%] text-center"><input type="radio" value="#D4E8C9" name="backgroundColor" class="cursor-pointer" {{ (session('pageConfig')->site->background_color == '#D4E8C9' ? 'checked' : '') }}></p>
                             </div>
                         </div>
                         <div class="w-full flex justify-center p-2">
-                            <button class="mt-4 px-2 py-1 bg-green-500 text-white rounded-lg shadow-md transition-all duration-300 hover:bg-green-600">Enregistrer</button>
+                            <button class="mt-4 px-2 py-1 bg-green-500 text-white rounded-lg shadow-md transition-all duration-300 hover:bg-green-600" name="background">Enregistrer</button>
                         </div>
                     </div>
+                    </form>
                     
                     <!-- Font color -->
+                    <form action="{{ route('sites.editFontColor') }}" method="POST" class="m-0 p-0">
+                    @csrf
                     <div class="border-b-4 mb-5">
                         <div class="flex flex-col">
                             <h1 class="text-center text-xl font-bold underline mb-3">Font Color</h1>
                             <div class="lg:flex">
                                 <p class="lg:w-[60%] text-center">Gris foncé</p>
                                 <p class="lg:w-[20%] text-center"><input type="color" value="#333333" class="cursor-pointer" disabled></p>
-                                <p class="lg:w-[20%] text-center"><input type="radio" value="#333333" name="font" class="cursor-pointer"></p>
+                                <p class="lg:w-[20%] text-center"><input type="radio" value="#333333" name="fontColor" class="cursor-pointer" {{ (session('pageConfig')->site->font_color == '#333333' ? 'checked' : '') }}></p>
                             </div>
                             
                             <div class="lg:flex">
                                 <p class="lg:w-[60%] text-center">Noir</p>
                                 <p class="lg:w-[20%] text-center"><input type="color" value="#000000" class="cursor-pointer" disabled></p>
-                                <p class="lg:w-[20%] text-center"><input type="radio" value="#000000" name="font" class="cursor-pointer"></p>
+                                <p class="lg:w-[20%] text-center"><input type="radio" value="#000000" name="fontColor" class="cursor-pointer" {{ (session('pageConfig')->site->font_color == '#000000' ? 'checked' : '') }}></p>
                             </div>
 
                             <div class="lg:flex">
                                 <p class="lg:w-[60%] text-center">Marron foncé</p>
-                                <p class="lg:w-[20%] text-center"><input type="color" value="#663300" class="cursor-pointer" disabled></p>
-                                <p class="lg:w-[20%] text-center"><input type="radio" value="#663300" name="font" class="cursor-pointer"></p>
+                                <p class="lg:w-[20%] text-center"><input type="color" value="#3d1f00" class="cursor-pointer" disabled></p>
+                                <p class="lg:w-[20%] text-center"><input type="radio" value="#3d1f00" name="fontColor" class="cursor-pointer" {{ (session('pageConfig')->site->font_color == '#3d1f00' ? 'checked' : '') }}></p>
                             </div>
                         </div>
                         <div class="w-full flex justify-center p-2">
-                            <button class="mt-4 px-2 py-1 bg-green-500 text-white rounded-lg shadow-md transition-all duration-300 hover:bg-green-600">Enregistrer</button>
+                            <button class="mt-4 px-2 py-1 bg-green-500 text-white rounded-lg shadow-md transition-all duration-300 hover:bg-green-600" name="font">Enregistrer</button>
                         </div>
                     </div>
+                    </form>
 
-                    <!-- Section Separation -->
+                    <!-- Section Color -->
+                    <form action="{{ route('sites.editSectionColor') }}" method="POST" class="m-0 p-0">
+                    @csrf
                     <div class="mb-5">
                         <div class="flex flex-col">
                             <h1 class="text-center text-xl font-bold underline mb-3">Section Color</h1>
                             <div class="lg:flex">
                                 <p class="lg:w-[60%] text-center">Gris Ardoise</p>
                                 <p class="lg:w-[20%] text-center"><input type="color" value="#40535B" class="cursor-pointer" disabled></p>
-                                <p class="lg:w-[20%] text-center"><input type="radio" value="#40535B" name="section" class="cursor-pointer"></p>
+                                <p class="lg:w-[20%] text-center"><input type="radio" value="#40535B" name="sectionColor" class="cursor-pointer" {{ (session('pageConfig')->site->section_color == '#40535B' ? 'checked' : '') }}></p>
                             </div>
                             
                             <div class="lg:flex">
                                 <p class="lg:w-[60%] text-center">Vert foncé</p>
                                 <p class="lg:w-[20%] text-center"><input type="color" value="#495B40" class="cursor-pointer" disabled></p>
-                                <p class="lg:w-[20%] text-center"><input type="radio" value="#495B40" name="section" class="cursor-pointer"></p>
+                                <p class="lg:w-[20%] text-center"><input type="radio" value="#495B40" name="sectionColor" class="cursor-pointer" {{ (session('pageConfig')->site->section_color == '#495B40' ? 'checked' : '') }}></p>
                             </div>
 
                             <div class="lg:flex">
                                 <p class="lg:w-[60%] text-center">Taupe</p>
                                 <p class="lg:w-[20%] text-center"><input type="color" value="#847A67" class="cursor-pointer" disabled></p>
-                                <p class="lg:w-[20%] text-center"><input type="radio" value="#847A67" name="section" class="cursor-pointer"></p>
+                                <p class="lg:w-[20%] text-center"><input type="radio" value="#847A67" name="sectionColor" class="cursor-pointer" {{ (session('pageConfig')->site->section_color == '#847A67' ? 'checked' : '') }}></p>
                             </div>
                         </div>
                         <div class="w-full flex justify-center p-2">
-                            <button class="mt-4 px-2 py-1 bg-green-500 text-white rounded-lg shadow-md transition-all duration-300 hover:bg-green-600">Enregistrer</button>
+                            <button class="mt-4 px-2 py-1 bg-green-500 text-white rounded-lg shadow-md transition-all duration-300 hover:bg-green-600" name="section">Enregistrer</button>
                         </div>
                     </div>
-                
+                    </form>
                 </div>
             </section>
+            </form>
         </section>
     </section>
 
     <script>
         const mediaQuery = window.matchMedia("(max-width:768px)");
+
+        //addPageModal
+            const addPageModal = document.getElementById('addPageModal');
+            const closeAddPageModal = document.getElementById('closeAddPageModal');
+            const addPage = document.getElementById('addPage');
+
+            addPage.addEventListener('click', () => {
+                addPageModal.classList.remove('hidden');
+            });
+
+            closeAddPageModal.addEventListener('click', () => {
+                addPageModal.classList.add('hidden');
+                location.reload();
+            })
+        //
+
+        //editPageModal
+            const editPageModal = document.getElementById('editPageModal');
+            const closeEditPageModal = document.getElementById('closeEditPageModal');
+            const editPage = document.getElementById('editPage');
+            const editPageName = document.getElementById('editPageName');
+
+            editPage.addEventListener('click', async (event) => {
+                
+                let id = parseInt(event.target.parentNode.parentNode.querySelector('input').value);
+
+                let response = await fetch(`/pages/getPage/${id}`);
+                let data = await response.json();
+
+                editPageName.value = data.name;
+
+                editPageModal.classList.remove('hidden');
+            });
+
+            closeEditPageModal.addEventListener('click', () => {
+                editPageModal.classList.add('hidden');
+                location.reload();
+            })
+        //
+
+        //addPageModal
+            const addArticleModal = document.getElementById('addArticleModal');
+            const closeAddArticleModal = document.getElementById('closeAddArticleModal');
+            const addArticle = document.getElementById('addArticle');
+
+            addArticle.addEventListener('click', () => {
+                addArticleModal.classList.remove('hidden');
+            });
+
+            closeAddArticleModal.addEventListener('click', () => {
+                addArticleModal.classList.add('hidden');
+                location.reload();
+            })
+        //
+
+        //Suppression des messages existants
+            const msg = Array.from(document.getElementsByClassName('message'));
+
+            setTimeout(() => {
+                msg.forEach((m) => {
+                    m.remove();
+                });
+            }, 3000);
+        //
     </script>
         @yield('scripts')
+
     </body>
 </html>

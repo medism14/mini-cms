@@ -11,7 +11,6 @@ class Text extends Model
     use HasFactory;
 
     protected $fillable = [
-        'order',
         'content',
         'article_id'
     ];

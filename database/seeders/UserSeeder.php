@@ -8,6 +8,7 @@ use App\Models\Page;
 use App\Models\Section;
 use App\Models\Image;
 use App\Models\Text;
+use App\Models\Article;
 use App\Models\Menu;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -29,9 +30,9 @@ class UserSeeder extends Seeder
 
         $site = Site::Create([
             'name' => 'monSite',
-            'font_color' => 'black',
-            'background_color' => '#F2F4F2',
-            'section_color' => '#C2DCBC',
+            'font_color' => '#333333',
+            'background_color' => '#D8E5EB',
+            'section_color' => '#40535B',
             'user_id' => $user->id
         ]);
 
