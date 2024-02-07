@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Models\User;
-use App\Models\Page;
+use App\Models\Article;
 
 class comment extends Model
 {
@@ -15,15 +15,15 @@ class comment extends Model
     protected $fillable = [
         'content',
         'user_id',
-        'page_id'
+        'article_id'
     ];
     
     public function user () {
         return $this->belongsTo(User::class);
     }
 
-    public function page () {
-        return $this->belongsTo(Page::class);
+    public function article () {
+        return $this->belongsTo(Article::class);
     }
 
 }

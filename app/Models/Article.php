@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Text;
 use App\Models\Image;
+use App\Models\Comment;
 use App\Models\Page;
 
 class Article extends Model
@@ -28,6 +29,10 @@ class Article extends Model
 
     public function images () {
         return $this->hasOne(Image::class);
+    }
+
+    public function comments () {
+        return $this->hasMany(Comment::class);
     }
 
 }
