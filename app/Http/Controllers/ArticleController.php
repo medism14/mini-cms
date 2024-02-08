@@ -139,7 +139,7 @@ class ArticleController extends Controller
 
         $comments = Comment::whereHas('article', function ($query) use ($article) {
             $query->where('id', $article->id);
-        })->get();
+        })->orderBy('created_at', 'desc')->get();
 
         if ($article->page->site->user->id != auth()->user()->id) {
             return redirect()->back()->with([
@@ -164,7 +164,7 @@ class ArticleController extends Controller
 
         $comments = Comment::whereHas('article', function ($query) use ($article) {
             $query->where('id', $article->id);
-        })->get();
+        })->orderBy('created_at', 'desc')->get();
 
         return view('authed.article', [
             'article' => $article,
