@@ -12,7 +12,7 @@
         <link rel="icon" href="{{ asset('images/blogIcon.png') }}">
         <script src="https://cdn.tailwindcss.com"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        
 
     <style>
         body {
@@ -36,9 +36,6 @@
             border: none;
         }
 
-        #sectionDisplay {
-            
-        }
     </style>
 
     </head>
@@ -48,13 +45,21 @@
     <section class="flex">
 
         <!-- Section gauche -->
-        <section class="min-h-screen w-[20%]">
+        <section class="min-h-screen relative w-[20%]" id="sectionGauche">
             <!-- Section gauche conteneur -->
-            <section class="fixed min-h-screen flex flex-col w-[20%]">
+            <section class="fixed min-h-screen flex flex-col w-[20%]" id="subSectionGauche">
+
+                <button class="absolute hidden left-0 text-2xl font-bold cursor-pointer m-2" id="sectionGaucheBoutton">
+                    <i class="fas fa-angle-left"></i>
+                </button>
+
                 <!-- Section gauche partie haute -->
                 <div class="h-[40vh] overflow-auto flex flex-col text-center border-b-2">
                     <!-- Ajouter une nouvelle page -->
                     <div class="m-4 flex">
+                        <div class="flex-1">
+
+                        </div>
                         <div class="flex-1 flex justify-start">
                             Pages
                         </div>
@@ -66,7 +71,7 @@
                     <!-- Pages -->
                     @foreach ($pages as $page)
                         <div class="flex border-b-2">
-                            <form action="{{ route('users.config') }}" method="POST" class="m-0 p-0 flex-1">
+                            <form action="{{ route('config') }}" method="POST" class="m-0 p-0 flex-1">
                                 @csrf
                                 <button name="pageId" value="{{ $page->id }}" class="{{ session('pageConfig')->name == $page->name ? 'underline' : '' }} px-4 rounded-b-lg border-b-2 border-gray-900 text-lg text-gray-700 font-bold hover:text-gray-900 m-2" type="submit">{{ $page->name }}</button>
                             </form>
@@ -89,6 +94,9 @@
                 <div class="h-[60vh] overflow-auto flex flex-col text-center">
                     <!-- Ajouter une nouvelle section -->
                     <div class="m-4 flex">
+                        <div class="flex-1">
+
+                        </div>
                         <div class="flex-1 flex justify-start">
                             <p>Articles</p>
                         </div>
@@ -104,10 +112,9 @@
                                 <div class="w-2/3 flex justify-start">
                                     {{ $article->title }}
                                 </div>
-                                <div class="w-1/3 flex space-x-3 justify-end">
-                                    <div class="">
-                                        <input id="pageId" value="{{ $page->id }}" class="hidden">
-                                        <button name="pageId" value="{{ $page->id }}" class="text-lg text-orange-600 font-bold hover:text-orange-700" type="submit" id="editPage"><i class="fas fa-pencil-alt"></i></button>
+                                <div class="w-1/3 flex space-x-4 justify-end">
+                                    <div>
+                                        <a href="{{ route('articles.configArticle', ['id' => $article->id]) }}" name="pageId" class="text-lg text-blue-700 font-bold hover:text-blue-800" id="editPage"><i class="fas fa-cog"></i></a>
                                     </div>
 
                                     <form action="{{ route('articles.delete', ['id' => $article->id]) }}" method="POST" class="m-0 p-0 flex items-center" onsubmit="return confirm('Voulez vous vraiment supprimer cette article ?')">
@@ -124,108 +131,8 @@
             </section>
         </section>
 
-        <!-- Modal ajouter page -->
-        <div id="addPageModal" class="hidden h-screen z-50 inset-0 fixed bg-gray-300 bg-opacity-75">
-            <form action="{{ route('pages.add') }}" method="POST" class="p-0 m-0">
-                @csrf
-            <div id="subAddPageModal" class="w-full md:w-[40%] mx-auto my-24 flex justify-center flex flex-col">
-                <!-- Modal title -->
-                <div class="rounded-lg w-full rounded-b-none p-3 text-center bg-green-800 text-white flex">
-                    <p class="w-1/3"></p>
-                    <p class="flex-1">Ajout page</p>
-                    <p class="text-end w-1/3"><i class="fas fa-times cursor-pointer text-xl" id="closeAddPageModal"></i></p>
-                </div>
-
-                <!-- Modal body -->
-                <div class="rounded-lg w-full rounded-t-none rounded-b-none p-3 text-center bg-gray-300 ">
-                    <!-- Row -->
-                    <div class="w-full flex justify-center items-center">
-                        <label for="pageName">Nom de la page: </label>
-                        <input type="text" name="pageName" id="pageName" class="ml-3 p-1 rounded outline-none shadow-md">
-                    </div>
-                </div>
-
-                <!-- Modal footer -->
-                <div class="rounded-lg w-full rounded-t-none p-3 text-center bg-gray-100 border-t-2 border-gray-400">
-                    <button class="px-2 py-1 bg-green-700 text-white rounded-lg transition-all duration-300 hover:bg-green-800">Ajouter</button>
-                </div>
-            </div>
-            </form>
-        </div>
-
-        <!-- Modal modifier page -->
-        <div id="editPageModal" class="hidden h-screen z-50 inset-0 fixed bg-gray-300 bg-opacity-75">
-            <form action="{{ route('pages.edit', ['id' => $page->id]) }}" method="POST" class="m-0 p-0">
-                @csrf
-            <div id="subEditPageModal" class="w-full md:w-[40%] mx-auto my-24 flex justify-center flex flex-col">
-                <!-- Modal title -->
-                <div class="rounded-lg w-full rounded-b-none p-3 text-center bg-green-800 text-white flex">
-                    <p class="w-1/3"></p>
-                    <p class="flex-1">Modification page</p>
-                    <p class="text-end w-1/3"><i class="fas fa-times cursor-pointer text-xl" id="closeEditPageModal"></i></p>
-                </div>
-
-                <!-- Modal body -->
-                <div class="rounded-lg w-full rounded-t-none rounded-b-none p-3 text-center bg-gray-300 ">
-                    <!-- Row -->
-                    <div class="w-full flex justify-center items-center">
-                        <label for="editPageName">Nom de la page: </label>
-                        <input type="text" name="editPageName" id="editPageName" class="ml-3 p-1 rounded outline-none shadow-md">
-                    </div>
-                </div>
-
-                <!-- Modal footer -->
-                <div class="rounded-lg w-full rounded-t-none p-3 text-center bg-gray-100 border-t-2 border-gray-400">
-                    <button class="px-2 py-1 bg-green-700 text-white rounded-lg transition-all duration-300 hover:bg-green-800">Modifier</button>
-                </div>
-            </div>
-            </form>
-        </div>
-
-        <!-- Modal ajouter article -->
-        <div id="addArticleModal" class="hidden h-screen z-50 inset-0 fixed bg-gray-300 bg-opacity-75 overflow-auto">
-            <form action="{{ route('articles.add') }}" method="POST" class="m-0 p-0" enctype="multipart/form-data">
-            @csrf
-            <div id="subaddArticleModal" class="w-full md:w-[80%] mx-auto flex justify-center flex flex-col my-5">
-                <!-- Modal title -->
-                <div class="rounded-lg w-full rounded-b-none p-3 text-center bg-green-800 text-white flex">
-                    <p class="w-1/3"></p>
-                    <p class="flex-1">Ajout Article</p>
-                    <p class="text-end w-1/3"><i class="fas fa-times cursor-pointer text-xl" id="closeAddArticleModal"></i></p>
-                </div>
-
-                <!-- Modal body -->
-                <div class="rounded-lg w-full rounded-t-none rounded-b-none p-3 text-center bg-gray-300 flex flex-col space-y-8">
-                    <!-- Row -->
-                    <div class="w-full flex justify-center items-center">
-                        <label for="addArticleTitle">Titre de l'article: </label>
-                        <input type="text" placeholder="Titre de l'article..." name="addArticleTitle" id="addArticleTitle" class="ml-3 p-1 rounded outline-none shadow-md">
-                    </div>
-
-                    <!-- Row -->
-                    <div class="w-full flex justify-center items-center">
-                        <label for="addArticleImage">Image de l'article: </label>
-                        <input type="file" name="addArticleImage" id="addArticleImage" class="ml-3 shadow-md border-none rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:border-transparent">
-                    </div>
-
-                    <!-- Row -->
-                    <div class="w-full flex justify-center items-center flex-col">
-                        <label for="addArticleContent">Contenu: </label>
-                        <textarea id="addArticleContent" placeholder="Contenu de l'article..." name="addArticleContent" cols="100" rows="30" class="p-1 focus:outline-none focus:ring-2 border-blue-300 rounded"></textarea>
-                    </div>
-                </div>
-
-                <!-- Modal footer -->
-                <div class="rounded-lg w-full rounded-t-none p-3 text-center bg-gray-100 border-t-2 border-gray-400">
-                    <button class="px-2 py-1 bg-green-700 text-white rounded-lg transition-all duration-300 hover:bg-green-800">Ajouter</button>
-                </div>
-            </div>
-            </form>
-        </div>
-
-
         <!-- Section milieu -->
-        <section id="sectionDisplay" class="overflow-auto w-[60%] p-5 flex flex-col items-center bg-[{{ $user->site->background_color }}]">
+        <section id="sectionDisplay" class="relative overflow-auto w-[60%] p-5 flex flex-col items-center bg-[{{ $user->site->background_color }}]">
             @if (session('errors'))
                 @if (is_array(session('errors')))
                     <script>
@@ -247,6 +154,14 @@
                     </script>
                 @endif
             @endif
+            
+            <button class="absolute hidden right-0 text-2xl font-bold cursor-pointer m-2" id="sectionMilieuDroiteBoutton">
+                <i class="fas fa-angle-left"></i>
+            </button>
+            
+            <button class="absolute hidden left-0 text-2xl font-bold cursor-pointer m-2" id="sectionMilieuGaucheBoutton">
+                <i class="fas fa-angle-right"></i>
+            </button>
 
             @if (session('success'))
                 <p class="w-full text-center mb-5 text-green-600 message">{{ session('success') }}</p>
@@ -256,12 +171,17 @@
         </section>
 
         <!-- Section droite -->
-        <section class="min-h-screen w-[20%]">
+        <section class="min-h-screen w-[20%] relative" id="sectionDroite">
             <!-- Section droite conteneur -->
-            <section class="fixed min-h-screen flex flex-col w-[20%]">
+            <section class="fixed min-h-screen flex flex-col w-[20%]" id="subSectionDroite">
+
+                <button class="absolute hidden right-0 text-2xl font-bold cursor-pointer m-2" id="sectionDroiteBoutton">
+                    <i class="fas fa-angle-right"></i>
+                </button>
+                
                 <!-- Section droite partie haute -->
                 <div class="h-[10vh] border-b-2 w-full overflow-auto flex flex-col items-center justify-center">
-                        <a href="{{ route('users.dashboard') }}" class="p-2"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Rendu public</a>
+                        <a href="{{ route('site.dashboard', ['siteName' => auth()->user()->site->name]) }}" class="p-2"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Rendu public</a>
                 </div>
                 <!-- Section droite partie bas -->
                 <div class="h-[90vh] w-full overflow-auto pt-5">
@@ -401,6 +321,105 @@
             </section>
             </form>
         </section>
+
+        <!-- Modal ajouter page -->
+        <div id="addPageModal" class="hidden h-screen z-50 inset-0 fixed bg-gray-300 bg-opacity-75">
+            <form action="{{ route('pages.add') }}" method="POST" class="p-0 m-0">
+                @csrf
+            <div id="subAddPageModal" class="w-full md:w-[40%] mx-auto my-24 flex justify-center flex flex-col">
+                <!-- Modal title -->
+                <div class="rounded-lg w-full rounded-b-none p-3 text-center bg-green-800 text-white flex">
+                    <p class="w-1/3"></p>
+                    <p class="flex-1">Ajout page</p>
+                    <p class="text-end w-1/3"><i class="fas fa-times cursor-pointer text-xl" id="closeAddPageModal"></i></p>
+                </div>
+
+                <!-- Modal body -->
+                <div class="rounded-lg w-full rounded-t-none rounded-b-none p-3 text-center bg-gray-300 ">
+                    <!-- Row -->
+                    <div class="w-full flex justify-center items-center">
+                        <label for="pageName">Nom de la page: </label>
+                        <input type="text" name="pageName" id="pageName" class="ml-3 p-1 rounded outline-none shadow-md">
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="rounded-lg w-full rounded-t-none p-3 text-center bg-gray-100 border-t-2 border-gray-400">
+                    <button class="px-2 py-1 bg-green-700 text-white rounded-lg transition-all duration-300 hover:bg-green-800">Ajouter</button>
+                </div>
+            </div>
+            </form>
+        </div>
+
+        <!-- Modal modifier page -->
+        <div id="editPageModal" class="hidden h-screen z-50 inset-0 fixed bg-gray-300 bg-opacity-75">
+            <form action="{{ route('pages.edit', ['id' => $page->id]) }}" method="POST" class="m-0 p-0">
+                @csrf
+            <div id="subEditPageModal" class="w-full md:w-[40%] mx-auto my-24 flex justify-center flex flex-col">
+                <!-- Modal title -->
+                <div class="rounded-lg w-full rounded-b-none p-3 text-center bg-green-800 text-white flex">
+                    <p class="w-1/3"></p>
+                    <p class="flex-1">Modification page</p>
+                    <p class="text-end w-1/3"><i class="fas fa-times cursor-pointer text-xl" id="closeEditPageModal"></i></p>
+                </div>
+
+                <!-- Modal body -->
+                <div class="rounded-lg w-full rounded-t-none rounded-b-none p-3 text-center bg-gray-300 ">
+                    <!-- Row -->
+                    <div class="w-full flex justify-center items-center">
+                        <label for="editPageName">Nom de la page: </label>
+                        <input type="text" name="editPageName" id="editPageName" class="ml-3 p-1 rounded outline-none shadow-md">
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="rounded-lg w-full rounded-t-none p-3 text-center bg-gray-100 border-t-2 border-gray-400">
+                    <button class="px-2 py-1 bg-green-700 text-white rounded-lg transition-all duration-300 hover:bg-green-800">Modifier</button>
+                </div>
+            </div>
+            </form>
+        </div>
+
+        <!-- Modal ajouter article -->
+        <div id="addArticleModal" class="hidden h-screen z-50 inset-0 fixed bg-gray-300 bg-opacity-75 overflow-auto">
+            <form action="{{ route('articles.add') }}" method="POST" class="m-0 p-0" enctype="multipart/form-data" onsubmit="verifyImage()">
+            @csrf
+            <div id="subaddArticleModal" class="w-full md:w-[80%] mx-auto flex justify-center flex flex-col my-5">
+                <!-- Modal title -->
+                <div class="rounded-lg w-full rounded-b-none p-3 text-center bg-green-800 text-white flex">
+                    <p class="w-1/3"></p>
+                    <p class="flex-1">Ajout Article</p>
+                    <p class="text-end w-1/3"><i class="fas fa-times cursor-pointer text-xl" id="closeAddArticleModal"></i></p>
+                </div>
+
+                <!-- Modal body -->
+                <div class="rounded-lg w-full rounded-t-none rounded-b-none p-3 text-center bg-gray-300 flex flex-col space-y-8">
+                    <!-- Row -->
+                    <div class="w-full flex justify-center items-center">
+                        <label for="addArticleTitle">Titre de l'article: </label>
+                        <input type="text" placeholder="Titre de l'article..." name="addArticleTitle" id="addArticleTitle" class="ml-3 p-1 rounded outline-none shadow-md">
+                    </div>
+
+                    <!-- Row -->
+                    <div class="w-full flex justify-center items-center">
+                        <label for="addArticleImage">Image de l'article: </label>
+                        <input type="file" name="addArticleImage" id="addArticleImage" class="ml-3 shadow-md border-none rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:border-transparent">
+                    </div>
+
+                    <!-- Row -->
+                    <div class="w-full flex justify-center items-center flex-col">
+                        <label for="addArticleContent">Contenu: </label>
+                        <textarea id="addArticleContent" placeholder="Contenu de l'article..." name="addArticleContent" cols="100" rows="30" class="p-1 focus:outline-none focus:ring-2 border-blue-300 rounded"></textarea>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="rounded-lg w-full rounded-t-none p-3 text-center bg-gray-100 border-t-2 border-gray-400">
+                    <button class="px-2 py-1 bg-green-700 text-white rounded-lg transition-all duration-300 hover:bg-green-800">Ajouter</button>
+                </div>
+            </div>
+            </form>
+        </div>
     </section>
 
     <script>
@@ -468,6 +487,110 @@
                     m.remove();
                 });
             }, 3000);
+        //
+
+        //Verification si image ou pas
+            function verifyImage () {
+                let addArticleImage = document.getElementById('addArticleImage');
+
+                if (addArticleImage.files.length > 0) {
+                    let file = addArticleImage.files[0]
+
+                    if (file.type.startsWith('image/')) {
+                        return true;
+                    } else {
+                        alert('Veuillez soumettre une image');
+                        return false;
+                    }
+                }
+            }
+        //
+
+        //Responsive 
+            const sectionGaucheBoutton = document.getElementById('sectionGaucheBoutton');
+            const sectionDroiteBoutton = document.getElementById('sectionDroiteBoutton');
+
+            const sectionMilieuDroiteBoutton = document.getElementById('sectionMilieuDroiteBoutton');
+            const sectionMilieuGaucheBoutton = document.getElementById('sectionMilieuGaucheBoutton');
+
+            const sectionGauche = document.getElementById('sectionGauche');
+            const subSectionGauche = document.getElementById('subSectionGauche');
+
+            const sectionDroite = document.getElementById('sectionDroite');
+            const subSectionDroite = document.getElementById('subSectionDroite');
+
+            const sectionMilieu = document.getElementById('sectionDisplay');
+
+            if (mediaQuery.matches) {
+                sectionGauche.classList.add('hidden');
+                sectionDroite.classList.add('hidden');
+                sectionMilieu.classList.remove('w-[60%]');
+                sectionMilieu.classList.add('w-full');
+
+                sectionGaucheBoutton.classList.remove('hidden');
+                sectionDroiteBoutton.classList.remove('hidden');
+                sectionMilieuDroiteBoutton.classList.remove('hidden');
+                sectionMilieuGaucheBoutton.classList.remove('hidden');
+            } else {
+                sectionGauche.classList.remove('hidden');
+                sectionDroite.classList.remove('hidden');
+                sectionMilieu.classList.add('w-[60%]');
+                sectionMilieu.classList.remove('w-full');
+
+                sectionGaucheBoutton.classList.add('hidden');
+                sectionDroiteBoutton.classList.add('hidden');
+                sectionMilieuDroiteBoutton.classList.add('hidden');
+                sectionMilieuGaucheBoutton.classList.add('hidden');
+            }
+
+            //Milieu gauche
+                sectionMilieuGaucheBoutton.addEventListener('click', () => {
+                    sectionMilieu.classList.add('hidden');
+
+                    sectionGauche.classList.remove('hidden', 'w-[20%]');
+                    sectionGauche.classList.add('w-full');
+
+                    subSectionGauche.classList.remove('hidden', 'w-[20%]');
+                    subSectionGauche.classList.add('w-full');
+                });
+            //
+
+            //Milieu droite
+            sectionMilieuDroiteBoutton.addEventListener('click', () => {
+                sectionMilieu.classList.add('hidden');
+
+                sectionDroite.classList.remove('hidden', 'w-[20%]');
+                sectionDroite.classList.add('w-full');
+
+                subSectionDroite.classList.remove('hidden', 'w-[20%]');
+                subSectionDroite.classList.add('w-full');
+                });
+            //
+
+            //Section Gauche
+            sectionGaucheBoutton.addEventListener('click', () => {
+                sectionMilieu.classList.remove('hidden');
+
+                sectionGauche.classList.add('hidden', 'w-[20%]');
+                sectionGauche.classList.remove('w-full');
+
+                subSectionGauche.classList.add('hidden', 'w-[20%]');
+                subSectionGauche.classList.remove('w-full');
+                });
+            //
+
+            //Section droite
+            sectionDroiteBoutton.addEventListener('click', () => {
+                sectionMilieu.classList.remove('hidden');
+
+                sectionDroite.classList.add('hidden', 'w-[20%]');
+                sectionDroite.classList.remove('w-full');
+
+                subSectionDroite.classList.add('hidden', 'w-[20%]');
+                subSectionDroite.classList.remove('w-full');
+                });
+            //
+
         //
     </script>
         @yield('scripts')

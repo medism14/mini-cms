@@ -14,7 +14,26 @@ use App\Models\User;
 class SiteController extends Controller
 {
     public function editSiteName (Request $request) {
+        
+        $validator = Validator::make($request->all(), [
+            'siteName' => 'unique:sites,name'
+        ], [
+            'siteName.unique' => 'Le nom du site doit être unique'
+        ]);
+
+        if ($validator->fails()) {
+            $errors = json_decode($validator->errors(), true);
+
+            return redirect()->back()->with([
+                'errors' => $errors,
+            ]);
+        }
+
         $site = Site::where('user_id', auth()->user()->id)->first();
+
+        $sites = Site::all();
+
+
 
         $site->name = $request->input('siteName');
         $site->save();

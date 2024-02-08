@@ -3,25 +3,50 @@
 @section('title', 'Configuration du site')
 
 @section('content')
+    <style>
+        img {
+            height: 150px;
+            object-fit: cover;
+        }
+
+    </style>
 
     <canvas id="myCanvas" style="border: 1px solid black; border-radius: 25px;"></canvas>
 
-    <hr class="w-[80%] border-b-2 my-10 border-[{{ $user->site->section_color }}]">
+    @if (session('pageConfig')->articles)
+        @if (!session('pageConfig')->articles->isEmpty())
+            <hr class="w-full border-b-2 my-10 border-[{{ $user->site->section_color }}]">
 
+            <h1 class="text-center mb-10 text-2xl font-bold underline">{{ session('pageConfig')->name }}</h1>
+        @endif
+    @endif
 
-    <section class="sectionContent w-full">
+        
+    <section id="sectionArticle" class="sectionContent w-full flex justify-center space-x-5">
         @if (session('pageConfig')->articles)
+            @if (!session('pageConfig')->articles->isEmpty())
+                <div class="flex items-center">
+                    <i class="fa fa-arrow-left text-xl cursor-pointer p-1 bg-white rounded-full" id="arrowLeft"></i>
+                </div>
+            @endif
+
             @foreach (session('pageConfig')->articles as $article)
-                <div class="flex flex-col w-1/5">
+                <div class="flex flex-col images">
                     <div class="flex-1">
-                        <img src="{{ asset('storage/' . $article->image->path) }}" class="rounded-lg rounded-b-none" width="200" height="100" alt="loup">
+                        <img src="{{ asset('storage/' . $article->image->path) }}" class="rounded-lg rounded-b-none" width="200" height="50" alt="loup">
                     </div>
                     <div class="bg-gray-700 rounded-lg rounded-t-none text-white font-bold text-xl flex flex-col">
                         <p class="text-center">{{ $article->title }}</p>
-                        <p class="text-end p-2"><a href="{{ route('articles.configArticles', ['id' => $article->id]) }}" class="m-0 p-0"><i class="fa fa-arrow-circle-right cursor-pointer"></i></a></p>
+                        <p class="text-end p-2"><a href="{{ route('articles.view', ['id' => $article->id]) }}" class="m-0 p-0"><i class="fa fa-arrow-circle-right cursor-pointer"></i></a></p>
                     </div>
                 </div>
             @endforeach
+
+            @if (!session('pageConfig')->articles->isEmpty())
+                <div class="flex items-center">
+                    <i class="fa fa-arrow-right text-xl cursor-pointer p-1 bg-white rounded-full" id="arrowRight"></i>
+                </div>
+            @endif
         @endif
     </section>
 
@@ -64,7 +89,71 @@
         //
 
         //Pagination des articles
-            
+            const sectionArticle = document.getElementById('sectionArticle');
+            const arrowLeft = document.getElementById('arrowLeft');
+            const arrowRight = document.getElementById('arrowRight');
+
+            let images = Array.from(document.getElementsByClassName('images'));
+
+            let i = 1;
+            images.forEach((image) => {
+                if (i > 3) {
+                    image.classList.add('hidden');
+                }
+                i++;
+            });
+
+            arrowLeft.addEventListener('click', () => {
+                let i = 0;
+                let positionActuel;
+                images.forEach((image) => {
+                    
+                    if (!image.classList.contains('hidden')) {
+                        positionActuel = i;
+                        return;
+                    }
+
+                    i++
+                });
+
+                if (positionActuel >= 1) {
+                    let positionAjouter = positionActuel - 1;
+                    let positionEnlever = positionActuel + 2;
+
+                    images[positionAjouter].classList.remove('hidden');
+                    images[positionEnlever].classList.add('hidden');
+                }
+
+            });
+
+            arrowRight.addEventListener('click', () => {
+                let i = 0;
+                let positionActuel = null;
+                images.forEach((image) => {
+
+                    if (i == 0) {
+                        
+                    } else {
+                        if (image.classList.contains('hidden') && !images[i-1].classList.contains('hidden')) {
+                            positionActuel = i;
+                            return;
+                        }
+                    }
+                    
+
+                    i++
+                });
+
+
+                if (positionActuel) {
+                    let positionEnlever = positionActuel - 3;
+
+
+                    images[positionEnlever].classList.add('hidden');
+                    images[positionActuel].classList.remove('hidden');
+                }
+
+            });
         //
     </script>
 @endsection

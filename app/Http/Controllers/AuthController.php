@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Site;
 use App\Models\Page;
+use Illuminate\Support\Facades\Session;
 use App\Models\Menu;
+
 class AuthController extends Controller {
 
     public function login(Request $request) {
@@ -17,7 +19,10 @@ class AuthController extends Controller {
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            return redirect()->route('users.dashboard');
+
+            $site = Site::where('user_id', auth()->user()->id)->first();
+
+            return redirect()->route('site.dashboard', ['siteName' => $site->name]);
         } else {
             return redirect()->back()->with([
                 'errors' => "Email ou mot de passe incorrect",
@@ -54,7 +59,7 @@ class AuthController extends Controller {
         $last_name = $request->input('last_name');
         $email = $request->input('email');
         $phone = $request->input('phone');
-        $password = $request->input('password');
+        $password = $request->input('mdp');
 
         $user = User::create([
             'first_name' => $first_name,
@@ -85,13 +90,16 @@ class AuthController extends Controller {
 
         Auth::login($user);
 
-        return redirect()->route('users.dashboard')->with([
+        return redirect()->route('site.dashboard', ['siteName' => $user->site->name])->with([
             'success' => 'Vous avez bien été créé'
         ]);
     }
 
     public function logout (Request $request) {
         Auth::logout();
+
+        Session::flush();
+
         return redirect('/');
     }
 

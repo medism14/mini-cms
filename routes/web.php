@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SiteController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ArticleController;
 
@@ -45,10 +46,10 @@ Route::middleware('preventBack')->group(function () {
     //Utilisateur authentifié
     Route::middleware('auth')->group(function () {
 
-        //Users
-        Route::prefix('/users')->name('users.')->group(function () {
-            Route::match(['get', 'post'], '/', [UserController::class, 'index'])->name('dashboard');
             Route::match(['get', 'post'], '/config', [UserController::class, 'config'])->name('config');
+            //Users
+        Route::prefix('/site')->name('site.')->group(function () {
+            Route::match(['get', 'post'], '/{siteName}', [UserController::class, 'index'])->name('dashboard');
         });
 
         //Sites
@@ -71,10 +72,17 @@ Route::middleware('preventBack')->group(function () {
         //Articles
         Route::prefix('/articles')->name('articles.')->group (function () {
             Route::post('/add', [ArticleController::class, 'add'])->name('add');
+            Route::post('/edit/{id}', [ArticleController::class, 'edit'])->name('edit');
             Route::get('/configArticle/{id}', [ArticleController::class, 'configArticle'])->name('configArticle');
             Route::get('/getArticle/{id}', [ArticleController::class, 'getArticle'])->name('getArticle');
             Route::get('/{id}', [ArticleController::class, 'view'])->name('view');
             Route::delete('/delete/{id}', [ArticleController::class, 'delete'])->name('delete');
+        });
+
+        //Commentaires
+        Route::prefix('/comments')->name('comments.')->group (function () {
+            Route::post('/add/{id}', [CommentController::class, 'add'])->name('add');
+            Route::delete('/delete/{id}', [CommentController::class, 'delete'])->name('delete');
         });
 
     });

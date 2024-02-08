@@ -17,10 +17,10 @@
 
     <style>
         body {
-            background-color: {{ $user->site->background_color }};
+            background-color: {{ $site->background_color }};
         }
         .sectionContent {
-            color: {{ $user->site->font_color }};
+            color: {{ $site->font_color }};
         }
 
         .soulignement::before {
@@ -63,7 +63,7 @@
     </style>
     <body class="antialiased">
     
-    @if ($user->site->menu->type == 'horizontale')
+    @if ($site->menu->type == 'horizontale')
         <!-- Horizontale -->
         <section class="flex flex-col w-full h-screen">
             <nav class="w-full p-5 flex justify-center rounded-b-lg text-base bg-white">
@@ -71,8 +71,8 @@
                 </div>
                 <div class="w-5/6 md:w-4/6 flex justify-center items-center">
                     <ul class="list-style-none text-black font-bold flex space-x-2">
-                        @foreach ($user->site->pages as $page)
-                            <form action="{{ route('users.dashboard') }}" method="POST">
+                        @foreach ($site->pages as $page)
+                            <form action="{{ route('site.dashboard', ['siteName' => $site->name]) }}" method="POST">
                                 @csrf
                                 <input class="hidden" value="{{ $page->id }}" name="pageId">
                                 <button type="submit" class="rounded-b-lg px-2 border-black border-b-2">{{ $page->name }}</button>
@@ -83,11 +83,13 @@
 
                 <div class="w-1/6 flex justify-end">
                     <ul class="list-style-none flex justify-end space-x-2 items-center">
-                        <li>
-                            <a href="/users/config" class="text-white cursor-pointer bg-gray-800 transition-all duration-300 hover:bg-gray-900 px-3 py-1 rounded-lg">
-                                <i class="fas fa-cog"></i>
-                            </a>
-                        </li>
+                        @if ($user->site->id == $site->id)
+                            <li>
+                                <a href="{{ route('config') }}" class="text-white cursor-pointer bg-gray-800 transition-all duration-300 hover:bg-gray-900 px-3 py-1 rounded-lg">
+                                    <i class="fas fa-cog"></i>
+                                </a>
+                            </li>
+                        @endif
                         <li>
                             <form action="{{ route('logout') }}" method="POST" class="m-0 p-0">
                                 @csrf
@@ -132,7 +134,7 @@
         </section>
     @endif
 
-    @if ($user->site->menu->type == 'verticale')
+    @if ($site->menu->type == 'verticale')
         <!-- Verticale -->
         <section class="w-full flex">
             <nav class="w-[25%] bg-white" id="menuVerticale">
@@ -140,11 +142,13 @@
                     <i id="closeMenuVerticale" class="fa fa-arrow-left bg-gray-800 hover:bg-gray-900 p-1 text-white absolute fixed right-0 cursor-pointer text-2xl top-[50%]"></i>
                     <div class="h-1/6">
                         <ul class="list-style-none flex justify-center mt-3 space-x-3 items-center">
-                            <li>
-                                <a href="/users/config" class="text-white cursor-pointer bg-gray-800 transition-all duration-300 hover:bg-gray-900 px-3 py-1 rounded-lg">
-                                    <i class="fas fa-cog"></i>
-                                </a>
-                            </li>
+                            @if ($user->site->id == $site->id)
+                                <li>
+                                    <a href="{{ route('config') }}" class="text-white cursor-pointer bg-gray-800 transition-all duration-300 hover:bg-gray-900 px-3 py-1 rounded-lg">
+                                        <i class="fas fa-cog"></i>
+                                    </a>
+                                </li>
+                            @endif
                             <li>
                                 <form action="{{ route('logout') }}" method="POST" class="m-0 p-0">
                                     @csrf
@@ -157,9 +161,9 @@
                     </div>
 
                     <div class="flex-1 flex items-center flex-col space-y-5 justify-center">
-                        @foreach ($user->site->pages as $page)
+                        @foreach ($site->pages as $page)
                         <div class="text-center text-xl pb-2 text-black">
-                            <form action="{{ route('users.dashboard') }}" method="POST">
+                            <form action="{{ route('site.dashboard', ['siteName' => $site->name]) }}" method="POST">
                                 @csrf
                                 <input class="hidden" value="{{ $page->id }}" name="pageId">
                                 <button type="submit" class="px-3 border-black border-b-2 rounded-lg">{{ $page->name }}</button>
@@ -198,16 +202,16 @@
         </section>
     @endif
 
-    @if ($user->site->menu->type == 'burger')
+    @if ($site->menu->type == 'burger')
         <!-- Burger -->
         <nav id="burgerNav" class="hidden h-screen w-full flex flex-col bg-gray-700">
             <div class="w-full flex justify-end p-3 h-1/6">
                 <i id="closeBurger" class="fas fa-close text-2xl text-white font-bold cursor-pointer"></i>
             </div>
             <nav class="h-4/6 flex flex-col justify-center items-center text-xl">
-                    @foreach ($user->site->pages as $page)
-                        <div class="text-center text-xl pb-2 text-white border-white rounded-b-lg border-b-2 rounded-lg-b">
-                            <form action="{{ route('users.dashboard') }}" method="POST">
+                    @foreach ($site->pages as $page)
+                        <div class="text-center text-xl pb-2 text-white border-white rounded-b-lg border-b-2 rounded-lg-b mb-5">
+                            <form action="{{ route('site.dashboard', ['siteName' => $site->name]) }}" method="POST">
                                 @csrf
                                 <input class="hidden" value="{{ $page->id }}" name="pageId">
                                 <button type="submit" class="soulignementB px-6 relative">{{ $page->name }}</button>
@@ -227,11 +231,13 @@
                 </div>
                 <div class="flex-1 justify-end mr-5">
                     <ul class="list-style-none flex items-center justify-end space-x-3">
-                        <li class="py-5">
-                            <a href="/users/config" class="text-white cursor-pointer bg-gray-800 transition-all duration-300 hover:bg-gray-900 px-3 py-1 rounded-lg">
-                                <i class="fas fa-cog"></i>
-                            </a>
-                        </li>
+                        @if ($user->site->id == $site->id)
+                            <li>
+                                <a href="{{ route('config') }}" class="text-white cursor-pointer bg-gray-800 transition-all duration-300 hover:bg-gray-900 px-3 py-1 rounded-lg">
+                                    <i class="fas fa-cog"></i>
+                                </a>
+                            </li>
+                        @endif
                         <li class="py-5">
                             <form action="{{ route('logout') }}" method="POST" class="m-0 p-0">
                                 @csrf
@@ -274,7 +280,7 @@
         //Manipulation verticale
             const mediaQuery = window.matchMedia("(max-width:768px)");
             
-            @if ($user->site->menu->type == 'verticale')
+            @if ($site->menu->type == 'verticale')
                 const menuVerticale = document.getElementById('menuVerticale');
                 const subMenuVerticale = document.getElementById('subMenuVerticale');
                 const contentMenuVerticale = document.getElementById('contentMenuVerticale');
@@ -333,7 +339,7 @@
         //
 
         //Manipulation burger
-            @if ($user->site->menu->type == 'burger')
+            @if ($site->menu->type == 'burger')
                 const openBurger = document.getElementById('openBurger');
                 const closeBurger = document.getElementById('closeBurger');
 
