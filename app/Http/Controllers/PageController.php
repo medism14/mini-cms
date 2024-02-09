@@ -28,12 +28,10 @@ class PageController extends Controller
         }
 
         $site = Site::where('user_id', auth()->user()->id)->first();
-        $order = Page::where('site_id', $site->id)->max('order');
-        $order++;
+        Page::where('site_id', $site->id);
 
         $page = Page::create([
             'name' => $request->input('pageName'),
-            'order' => $order,
             'site_id' => $site->id
         ]);
 

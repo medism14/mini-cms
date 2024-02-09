@@ -14,7 +14,6 @@ class Article extends Model
     use HasFactory;
 
     protected $fillable = [
-        'order',
         'title',
         'page_id'
     ];

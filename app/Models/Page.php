@@ -15,7 +15,6 @@ class Page extends Model
 
     protected $fillable = [
         'name',
-        'order',
         'site_id'
     ];
 

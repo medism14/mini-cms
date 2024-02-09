@@ -38,19 +38,10 @@ class ArticleController extends Controller
 
         $site = Site::where('user_id', auth()->user()->id)->first();
 
-        //Manip order
         $page = session('pageConfig');
-        $order = Article::where('page_id', $page->id)->max('order');
-
-        if (!$order) {
-            $order = 1;
-        } else {
-            $order++;
-        }
 
         $article = Article::Create([
             'title' => $request->input('addArticleTitle'),
-            'order' => $order,
             'page_id' => $page->id,
         ]);
 
