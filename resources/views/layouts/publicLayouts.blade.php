@@ -75,7 +75,7 @@
                             <form action="{{ route('site.dashboard', ['siteName' => $site->name]) }}" method="POST">
                                 @csrf
                                 <input class="hidden" value="{{ $page->id }}" name="pageId">
-                                <button type="submit" class="rounded-b-lg px-2 border-black border-b-2">{{ $page->name }}</button>
+                                <button type="submit" class="{{ $page->id == session('pagePublic')->id ? 'rounded-b-lg border-black border-b-2' : '' }} px-2 font-bold">{{ $page->name }}</button>
                             </form>
                         @endforeach
                     </ul>
@@ -85,15 +85,21 @@
                     <ul class="list-style-none flex justify-end space-x-2 items-center">
                         @if ($user->site->id == $site->id)
                             <li>
-                                <a href="{{ route('config') }}" class="text-white cursor-pointer bg-gray-800 transition-all duration-300 hover:bg-gray-900 px-3 py-1 rounded-lg">
+                                <a href="{{ route('config') }}" class="text-white cursor-pointer bg-gray-800 transition-all duration-300 hover:bg-gray-900 px-3 py-1 rounded-lg" title="Administration">
                                     <i class="fas fa-cog"></i>
+                                </a>
+                            </li>
+                        @else   
+                            <li>
+                                <a href="/" class="text-white cursor-pointer bg-gray-800 transition-all duration-300 hover:bg-gray-900 px-3 py-1 rounded-lg" title="Revenir dans votre site">
+                                    <i class="fas fa-arrow-circle-left"></i>
                                 </a>
                             </li>
                         @endif
                         <li>
                             <form action="{{ route('logout') }}" method="POST" class="m-0 p-0">
                                 @csrf
-                                <button class="text-white bg-gray-800 transition-all duration-300 hover:bg-gray-900 px-3 py-1 rounded-lg">
+                                <button class="text-white bg-gray-800 transition-all duration-300 hover:bg-gray-900 px-3 py-1 rounded-lg" title="Deconnexion">
                                     <i class="fas fa-door-open"></i>
                                 </button>
                             </form>
@@ -144,15 +150,21 @@
                         <ul class="list-style-none flex justify-center mt-3 space-x-3 items-center">
                             @if ($user->site->id == $site->id)
                                 <li>
-                                    <a href="{{ route('config') }}" class="text-white cursor-pointer bg-gray-800 transition-all duration-300 hover:bg-gray-900 px-3 py-1 rounded-lg">
+                                    <a href="{{ route('config') }}" class="text-white cursor-pointer bg-gray-800 transition-all duration-300 hover:bg-gray-900 px-3 py-1 rounded-lg" title="Administration">
                                         <i class="fas fa-cog"></i>
+                                    </a>
+                                </li>
+                            @else   
+                                <li>
+                                    <a href="/" class="text-white cursor-pointer bg-gray-800 transition-all duration-300 hover:bg-gray-900 px-3 py-1 rounded-lg" title="Revenir dans votre site">
+                                        <i class="fas fa-arrow-circle-left"></i>
                                     </a>
                                 </li>
                             @endif
                             <li>
                                 <form action="{{ route('logout') }}" method="POST" class="m-0 p-0">
                                     @csrf
-                                    <button class="text-white bg-gray-800 transition-all duration-300 hover:bg-gray-900 px-3 py-1 rounded-lg">
+                                    <button class="text-white bg-gray-800 transition-all duration-300 hover:bg-gray-900 px-3 py-1 rounded-lg" title="Deconnexion">
                                         <i class="fas fa-door-open"></i>
                                     </button>
                                 </form>
@@ -166,7 +178,7 @@
                             <form action="{{ route('site.dashboard', ['siteName' => $site->name]) }}" method="POST">
                                 @csrf
                                 <input class="hidden" value="{{ $page->id }}" name="pageId">
-                                <button type="submit" class="px-3 border-black border-b-2 rounded-lg">{{ $page->name }}</button>
+                                <button type="submit" class="{{ $page->id == session('pagePublic')->id ? 'rounded-b-lg border-black border-b-2' : '' }} px-3 font-bold">{{ $page->name }}</button>
                             </form>
                         </div>
                         @endforeach
@@ -210,11 +222,11 @@
             </div>
             <nav class="h-4/6 flex flex-col justify-center items-center text-xl">
                     @foreach ($site->pages as $page)
-                        <div class="text-center text-xl pb-2 text-white border-white rounded-b-lg border-b-2 rounded-lg-b mb-5">
+                        <div class="text-center text-xl pb-2 text-white mb-5">
                             <form action="{{ route('site.dashboard', ['siteName' => $site->name]) }}" method="POST">
                                 @csrf
                                 <input class="hidden" value="{{ $page->id }}" name="pageId">
-                                <button type="submit" class="soulignementB px-6 relative">{{ $page->name }}</button>
+                                <button type="submit" class="{{ $page->id == session('pagePublic')->id ? 'border-b-2 rounded-b-lg border-gray-100' : '' }} font-bold px-6 relative">{{ $page->name }}</button>
                             </form>
                         </div>
                     @endforeach
@@ -233,15 +245,21 @@
                     <ul class="list-style-none flex items-center justify-end space-x-3">
                         @if ($user->site->id == $site->id)
                             <li>
-                                <a href="{{ route('config') }}" class="text-white cursor-pointer bg-gray-800 transition-all duration-300 hover:bg-gray-900 px-3 py-1 rounded-lg">
+                                <a href="{{ route('config') }}" class="text-white cursor-pointer bg-gray-800 transition-all duration-300 hover:bg-gray-900 px-3 py-1 rounded-lg" title="Administration">
                                     <i class="fas fa-cog"></i>
+                                </a>
+                            </li>
+                        @else   
+                            <li>
+                                <a href="/" class="text-white cursor-pointer bg-gray-800 transition-all duration-300 hover:bg-gray-900 px-3 py-1 rounded-lg" title="Revenir dans votre site">
+                                    <i class="fas fa-arrow-circle-left"></i>
                                 </a>
                             </li>
                         @endif
                         <li class="py-5">
                             <form action="{{ route('logout') }}" method="POST" class="m-0 p-0">
                                 @csrf
-                                <button class="text-white bg-gray-800 transition-all duration-300 hover:bg-gray-900 px-3 py-1 rounded-lg">
+                                <button class="text-white bg-gray-800 transition-all duration-300 hover:bg-gray-900 px-3 py-1 rounded-lg" title="Deconnexion">
                                     <i class="fas fa-door-open"></i>
                                 </button>
                             </form>

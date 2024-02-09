@@ -73,7 +73,7 @@
                         <div class="flex border-b-2">
                             <form action="{{ route('config') }}" method="POST" class="m-0 p-0 flex-1">
                                 @csrf
-                                <button name="pageId" value="{{ $page->id }}" class="{{ session('pageConfig')->name == $page->name ? 'underline' : '' }} px-4 rounded-b-lg border-b-2 border-gray-900 text-lg text-gray-700 font-bold hover:text-gray-900 m-2" type="submit">{{ $page->name }}</button>
+                                <button name="pageId" value="{{ $page->id }}" class="{{ session('pageConfig')->name == $page->name ? 'rounded-b-lg border-b-2 border-gray-900' : '' }} px-4 text-lg text-gray-700 font-bold hover:text-gray-900 m-2" type="submit">{{ $page->name }}</button>
                             </form>
                             
                             <div class="w-1/6 ml-3 flex items-center">
@@ -248,8 +248,8 @@
 
                             <div class="lg:flex">
                                 <p class="lg:w-[60%] text-center">Vert Clair</p>
-                                <p class="lg:w-[20%] text-center"><input type="color" value="#D4E8C9" class="cursor-pointer" disabled></p>
-                                <p class="lg:w-[20%] text-center"><input type="radio" value="#D4E8C9" name="backgroundColor" class="cursor-pointer" {{ (session('pageConfig')->site->background_color == '#D4E8C9' ? 'checked' : '') }}></p>
+                                <p class="lg:w-[20%] text-center"><input type="color" value="#ECF5E2" class="cursor-pointer" disabled></p>
+                                <p class="lg:w-[20%] text-center"><input type="radio" value="#ECF5E2" name="backgroundColor" class="cursor-pointer" {{ (session('pageConfig')->site->background_color == '#ECF5E2' ? 'checked' : '') }}></p>
                             </div>
                         </div>
                         <div class="w-full flex justify-center p-2">

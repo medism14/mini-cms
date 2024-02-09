@@ -100,7 +100,7 @@ class UserController extends Controller
     public function redirection (Request $request) {
         $site = Site::where('user_id', auth()->user()->id)->first();
 
-        return route('site.dashboard', ['siteName' => $site->name]);
+        return redirect()->route('site.dashboard', ['siteName' => $site->name]);
     }
 
 }
