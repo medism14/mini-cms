@@ -15,7 +15,7 @@
     
     @if (session('pagePublic')->articles)
         @if (!session('pagePublic')->articles->isEmpty())
-            <hr class="w-full border-b-2 my-10 border-[{{ $user->site->section_color }}]">
+            <hr class="w-full border-b-2 my-10 border-[{{ $site->section_color }}]">
 
             <h1 class="text-center mb-10 text-2xl font-bold underline">{{ session('pagePublic')->name }}</h1>
         @endif
