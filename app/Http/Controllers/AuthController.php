@@ -85,7 +85,6 @@ class AuthController extends Controller {
     
         $page = Page::Create([
             'name' => 'Index',
-            'order' => 1,
             'site_id' => $site->id
         ]);
     
