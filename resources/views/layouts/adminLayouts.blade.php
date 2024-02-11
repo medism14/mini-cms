@@ -132,7 +132,7 @@
         </section>
 
         <!-- Section milieu -->
-        <section id="sectionDisplay" class="relative overflow-auto w-[60%] p-5 flex flex-col items-center bg-[{{ $user->site->background_color }}]">
+        <section id="sectionDisplay" class="relative min-h-screen overflow-auto w-[60%] p-5 flex flex-col items-center bg-[{{ $user->site->background_color }}]">
             @if (session('errors'))
                 @if (is_array(session('errors')))
                     <script>

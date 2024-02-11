@@ -76,7 +76,7 @@ class AuthController extends Controller {
     
         // Crée un nouveau site, une nouvelle page et un nouveau menu pour l'utilisateur.
         $site = Site::Create([
-            'name' => 'monSite',
+            'name' => 'monSite' . $user->id,
             'font_color' => '#333333',
             'background_color' => '#D8E5EB',
             'section_color' => '#40535B',
