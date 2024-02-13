@@ -61,8 +61,8 @@
             <img src="{{ asset('storage/' . $article->image->path) }}" class="rounded-lg w-full md:w-[50%]">
             <h1 class="font-bold text-xl underline mb-5">{{ $article->title }}</h1>
 
-            <div class="container">
-                {!! nl2br($article->text->content) !!}</p>
+            <div class="container break-words">
+                <p>{!! nl2br($article->text->content) !!}</p>
             </div>
         </div>
 
