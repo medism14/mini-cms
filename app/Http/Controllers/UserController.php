@@ -15,6 +15,12 @@ class UserController extends Controller
 
         $site = Site::where('name', $siteName)->first();
 
+        if (!$site) {
+            return redirect()->back()->with([
+                'errors' => 'Ce site n existe pas'
+            ]);
+        }
+
         //Si une autre page que l'actuel
             if (session('pagePublic')) {
                 $goodPage = false;
