@@ -51,11 +51,14 @@
                 let errors = '';
             </script>
             @if (session('errors'))
-                 @if (is_array(session('errors')))
+                @if (is_array(session('errors')))
+                    <script>
+                        var errors = '';
+                    </script>
                         @foreach (session('errors') as $error)
                             @foreach ($error as $v)
                                 <script>
-                                    errors += '{{ $v }}\n';
+                                    errors += "{!! $v !!}\n";
                                 </script>
                             @endforeach
                         @endforeach
@@ -64,7 +67,7 @@
                     </script>
                 @else
                     <script>
-                        alert("{{ session('errors') }}");
+                        alert("{!! session('errors') !!}");
                     </script>
                 @endif
             @endif

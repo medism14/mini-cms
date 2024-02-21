@@ -189,22 +189,27 @@
             </nav>
             <section id="contentMenuVerticale" class="p-5 w-[75%] flex flex-col items-center">
             <i id="openMenuVerticale" class="fa fa-arrow-right fixed cursor-pointer left-0 top-0 text-2xl bg-gray-800 hover:bg-gray-900 p-1 text-white "></i>
-                @if (session('errors'))
-                    @if (is_array(session('errors')))
-                            @foreach (session('errors') as $v => $error)
+            @if (session('errors'))
+                @if (is_array(session('errors')))
+                    <script>
+                        var errors = '';
+                    </script>
+                        @foreach (session('errors') as $error)
+                            @foreach ($error as $v)
                                 <script>
-                                    errors += '{{ $error }}';
+                                    errors += "{!! $v !!}\n";
                                 </script>
                             @endforeach
-                        <script>
-                            alert(errors);
-                        </script>
-                    @else
-                        <script>
-                            alert("{{ session('errors') }}");
-                        </script>
-                    @endif
+                        @endforeach
+                    <script>
+                        alert(errors);
+                    </script>
+                @else
+                    <script>
+                        alert("{!! session('errors') !!}");
+                    </script>
                 @endif
+            @endif
 
                 @if (session('success'))
                     <p class="w-full text-center mb-5 text-green-600 message">{{ session('success') }}</p>

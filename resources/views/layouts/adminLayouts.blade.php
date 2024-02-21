@@ -141,7 +141,7 @@
                         @foreach (session('errors') as $error)
                             @foreach ($error as $v)
                                 <script>
-                                    errors += '{{ $v }}\n';
+                                    errors += "{!! $v !!}\n";
                                 </script>
                             @endforeach
                         @endforeach
@@ -150,7 +150,7 @@
                     </script>
                 @else
                     <script>
-                        alert("{{ session('errors') }}");
+                        alert("{!! session('errors') !!}");
                     </script>
                 @endif
             @endif

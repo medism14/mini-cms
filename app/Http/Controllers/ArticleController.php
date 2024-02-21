@@ -30,7 +30,6 @@ class ArticleController extends Controller
 
         if ($validator->fails()) {
             $errors = json_decode($validator->errors(), true);
-
             return redirect()->back()->with([
                 'errors' => $errors
             ]);
